@@ -26,7 +26,13 @@ CSV.foreach(input_file, headers: true, header_converters: :symbol) do |row|
                          last_paired_with: row[:last_paired_with] }
 end
 
-@names = people.keys.shuffle
+@names = people.keys.uniq.shuffle
+off_last_time = people.select { |_k, v| v[:last_paired_with].nil? }.keys.shuffle
+off_last_time.each do |name|
+  @names.delete(name)
+  @names.unshift(name)
+end
+
 pairs_count = @names.length / 2
 
 pairs_count.times do
@@ -52,7 +58,7 @@ end
 
 CSV.open(input_file, 'w') do |csv|
   csv << %w[name last_paired_with]
-  people.each_value do |person|
-    csv << [person[:name], person[:last_paired_with]]
+  people.each_value do |p|
+    csv << [p[:name], p[:last_paired_with]]
   end
 end
