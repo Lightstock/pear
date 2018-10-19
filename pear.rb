@@ -41,7 +41,8 @@ off_last_time.each do |name|
   @names.unshift(name)
 end
 
-options[:exclude]&.each do |name|
+options[:exclude]&.each do |n|
+  name = n&.strip
   if @names.delete(name)
     people[name][:last_paired_with] = nil
     puts "#{name}: Excluded"
